@@ -2,6 +2,15 @@
 
 ## 1.1.0 - 2026-09-01
 
+- **Breaking:** the plugin id changed from `johnandante.removable-media` to
+  `johnandante.usb-tray` (to match the repo name), and the display name
+  changed from "Removable Media" to "USB Tray". If you installed 1.0.0,
+  the widget will silently disappear from your bar on upgrade — update
+  the `id` in your `~/.config/omarchy/shell.json` bar layout entry from
+  `johnandante.removable-media` to `johnandante.usb-tray`, and rename the
+  plugin folder from `~/.config/omarchy/plugins/johnandante.removable-media/`
+  to `~/.config/omarchy/plugins/johnandante.usb-tray/` (or just reinstall
+  via `omarchy plugin add`).
 - Translated all popup UI strings to English (title, section headers,
   button labels, tooltips, empty-state text). English is the standard
   across every Omarchy plugin, and there's no i18n framework in the shell.

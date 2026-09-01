@@ -41,6 +41,11 @@ omarchy plugin add https://github.com/JohnAndante/omarchy-usb-tray.git --enable
 Or clone manually into `~/.config/omarchy/plugins/johnandante.usb-tray/`
 and enable it with `omarchy plugin enable johnandante.usb-tray`.
 
+> **Upgrading from 1.0.0?** The plugin id changed from
+> `johnandante.removable-media` to `johnandante.usb-tray`. Update the `id`
+> in your `shell.json` bar layout entry and rename the plugin folder under
+> `~/.config/omarchy/plugins/`, or just reinstall with `omarchy plugin add`.
+
 ## Settings
 
 Set any of these as extra keys on the widget's `shell.json` layout entry,
@@ -66,6 +71,10 @@ alongside its `id`:
 | `rightClickAction`   | string  | `"eject-all"` | `"eject-all"` or `"open-popup"` — what a right-click on the bar icon does.         |
 | `mountedIcon`        | string  | nf-md-usb_flash_drive glyph | Bar/popup glyph shown while at least one device is mounted.          |
 | `ejectedIcon`        | string  | nf-md-usb_flash_drive_outline glyph | Bar/popup glyph shown while devices are present but unmounted. |
+
+`popupWidth` and `minSizeMb` aren't validated: a non-numeric `popupWidth`
+breaks the popup width, and a non-numeric `minSizeMb` silently falls back
+to no filtering.
 
 ## How it works
 
