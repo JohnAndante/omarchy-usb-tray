@@ -191,7 +191,7 @@ Panel {
 
       PanelHero {
         width: parent.width
-        title: "Removable Media"
+        title: "USB Tray"
         meta: root.devices.length === 0
           ? "Nothing connected"
           : (root.devices.length === 1 ? "1 device" : root.devices.length + " devices")
