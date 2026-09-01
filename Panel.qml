@@ -14,8 +14,8 @@ import "Model.js" as Model
 // while staying reactive.
 Panel {
   id: root
-  moduleName: "johnandante.removable-media"
-  ipcTarget: "johnandante.removable-media"
+  moduleName: "johnandante.usb-tray"
+  ipcTarget: "johnandante.usb-tray"
   manageIpc: false
 
   readonly property string fontFamily: bar ? bar.fontFamily : Style.font.family
@@ -139,11 +139,11 @@ Panel {
     stderr: SplitParser {
       onRead: function(line) {
         var text = String(line).trim()
-        if (text !== "") console.warn("[removable-media]", actionProc.command.join(" "), "->", text)
+        if (text !== "") console.warn("[usb-tray]", actionProc.command.join(" "), "->", text)
       }
     }
     onExited: function(exitCode) {
-      if (exitCode !== 0) console.warn("[removable-media] command failed with exit code", exitCode)
+      if (exitCode !== 0) console.warn("[usb-tray] command failed with exit code", exitCode)
       if (root.commandQueue.length > 0) root.runQueue()
       else root.refreshDevices()
     }

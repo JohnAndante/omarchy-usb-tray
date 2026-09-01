@@ -30,7 +30,7 @@ ejects every mounted device at once (configurable — see Settings below).
   `udisksctl`, used for mount/unmount/power-off).
 - `util-linux` (`lsblk`, used to enumerate devices).
 - A file manager registered as the default handler for directories, for
-  the "Abrir" action (`xdg-open`).
+  the "Open" action (`xdg-open`).
 
 ## Install
 
@@ -38,8 +38,8 @@ ejects every mounted device at once (configurable — see Settings below).
 omarchy plugin add https://github.com/JohnAndante/omarchy-usb-tray.git --enable
 ```
 
-Or clone manually into `~/.config/omarchy/plugins/johnandante.removable-media/`
-and enable it with `omarchy plugin enable johnandante.removable-media`.
+Or clone manually into `~/.config/omarchy/plugins/johnandante.usb-tray/`
+and enable it with `omarchy plugin enable johnandante.usb-tray`.
 
 ## Settings
 
@@ -48,7 +48,7 @@ alongside its `id`:
 
 ```json
 {
-  "id": "johnandante.removable-media",
+  "id": "johnandante.usb-tray",
   "popupWidth": 460,
   "minSizeMb": 32,
   "includeAllHotplug": false,
