@@ -16,7 +16,6 @@ Panel {
   id: root
   moduleName: "johnandante.usb-tray"
   ipcTarget: "johnandante.usb-tray"
-  manageIpc: false
 
   readonly property string fontFamily: bar ? bar.fontFamily : Style.font.family
   readonly property color foreground: bar ? bar.barForeground : Color.foreground
@@ -146,15 +145,6 @@ Panel {
       if (root.commandQueue.length > 0) root.runQueue()
       else root.refreshDevices()
     }
-  }
-
-  IpcHandler {
-    target: root.ipcTarget
-    function open(): void { root.open() }
-    function close(): void { root.close() }
-    function show(): void { root.open() }
-    function hide(): void { root.close() }
-    function toggle(): void { root.toggle() }
   }
 
   BarIconButton {
