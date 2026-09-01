@@ -165,8 +165,10 @@ Panel {
     tooltipText: root.devices.length > 0
       ? (root.devices.length === 1 ? "1 removable device" : root.devices.length + " removable devices")
       : ""
+    // "rightClickAction" shell.json setting: "eject-all" (default) or
+    // "open-popup".
     onPressed: function(b) {
-      if (b === Qt.RightButton) root.ejectAll()
+      if (b === Qt.RightButton && root.setting("rightClickAction", "eject-all") !== "open-popup") root.ejectAll()
       else root.toggle()
     }
   }
