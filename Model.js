@@ -50,7 +50,6 @@ function parseDevices(jsonText, options) {
         path: "/dev/" + (node.name || ""),
         label: node.label || node.name || "",
         size: formatSize(sizeBytes),
-        sizeBytes: sizeBytes,
         fstype: node.fstype || "",
         mountpoint: node.mountpoint || "",
         uuid: node.uuid || ""
