@@ -26,8 +26,9 @@ Panel {
   // nf-md-usb_flash_drive_outline (U+F129F) when devices are present but
   // none are mounted (unmounted/ejected but still known to the system).
   // Both confirmed against the official nerd-fonts glyphnames.json.
-  readonly property string deviceGlyphMounted: "󱊞"
-  readonly property string deviceGlyphEjected: "󱊟"
+  // Overridable via the "mountedIcon"/"ejectedIcon" shell.json settings.
+  readonly property string deviceGlyphMounted: root.setting("mountedIcon", "󱊞")
+  readonly property string deviceGlyphEjected: root.setting("ejectedIcon", "󱊟")
 
   property var devices: []
   property var commandQueue: []
