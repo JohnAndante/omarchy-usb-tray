@@ -172,7 +172,8 @@ Panel {
     bar: root.bar
     owner: root
     open: root.opened
-    contentWidth: popup.fittedContentWidth(Style.space(420))
+    // "popupWidth" shell.json setting overrides the default popup width.
+    contentWidth: popup.fittedContentWidth(Style.space(Number(root.setting("popupWidth", 420))))
     contentHeight: popup.fittedContentHeight(column.implicitHeight)
 
     Column {
