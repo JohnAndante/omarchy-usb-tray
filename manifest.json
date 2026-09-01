@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "johnandante.usb-tray",
   "name": "USB Tray",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "johnandante",
   "description": "Removable/USB storage indicator with mount, unmount, and eject",
   "kinds": [

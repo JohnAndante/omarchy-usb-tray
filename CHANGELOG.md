@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.1 - 2026-09-01
+
+- Fixed the plugin's IPC target (`omarchy-shell johnandante.usb-tray open`,
+  and `close`/`show`/`hide`/`toggle`) not working — a redundant `IpcHandler`
+  copied from the Bluetooth plugin was losing the naming race against the
+  base `Panel` component's own handler. Clicking the bar icon was never
+  affected, only direct IPC calls.
+
 ## 1.1.0 - 2026-09-01
 
 - **Breaking:** the plugin id changed from `johnandante.removable-media` to
