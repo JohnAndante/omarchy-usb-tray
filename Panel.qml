@@ -158,7 +158,7 @@ Panel {
     bar: root.bar
     text: root.icon
     tooltipText: root.devices.length > 0
-      ? (root.devices.length === 1 ? "1 dispositivo removível" : root.devices.length + " dispositivos removíveis")
+      ? (root.devices.length === 1 ? "1 removable device" : root.devices.length + " removable devices")
       : ""
     onPressed: function(b) {
       if (b === Qt.RightButton) root.ejectAll()
@@ -182,10 +182,10 @@ Panel {
 
       PanelHero {
         width: parent.width
-        title: "Mídia removível"
+        title: "Removable Media"
         meta: root.devices.length === 0
-          ? "Nada conectado"
-          : (root.devices.length === 1 ? "1 dispositivo" : root.devices.length + " dispositivos")
+          ? "Nothing connected"
+          : (root.devices.length === 1 ? "1 device" : root.devices.length + " devices")
         foreground: root.foreground
         fontFamily: root.fontFamily
         iconComponent: Component {
@@ -212,7 +212,7 @@ Panel {
           id: deviceHeader
           anchors.left: parent.left
           anchors.verticalCenter: parent.verticalCenter
-          text: "DISPOSITIVOS"
+          text: "DEVICES"
           foreground: root.foreground
           fontFamily: root.fontFamily
         }
@@ -221,7 +221,7 @@ Panel {
           id: ejectAllButton
           anchors.right: parent.right
           anchors.verticalCenter: parent.verticalCenter
-          text: "Ejetar tudo"
+          text: "Eject all"
           fontFamily: root.fontFamily
           foreground: root.foreground
           onClicked: root.ejectAll()
@@ -229,11 +229,11 @@ Panel {
       }
 
       // Section header alone, for the no-mounted-devices case (still shows
-      // "DISPOSITIVOS" above an unmounted-but-present drive without an
+      // "DEVICES" above an unmounted-but-present drive without an
       // eject-all button that would have nothing to do).
       PanelSectionHeader {
         visible: root.devices.length > 0 && root.mountedDevices.length === 0
-        text: "DISPOSITIVOS"
+        text: "DEVICES"
         foreground: root.foreground
         fontFamily: root.fontFamily
       }
@@ -241,7 +241,7 @@ Panel {
       Text {
         width: parent.width
         visible: root.devices.length === 0
-        text: "Nenhum dispositivo removível conectado"
+        text: "No removable device connected"
         color: root.dim
         font.family: root.fontFamily
         font.pixelSize: Style.font.bodySmall
@@ -283,7 +283,7 @@ Panel {
                 width: parent.width
                 text: deviceRow.modelData.size + (deviceRow.modelData.mountpoint !== ""
                   ? " · " + deviceRow.modelData.mountpoint
-                  : " · não montado")
+                  : " · not mounted")
                 color: root.dim
                 font.family: root.fontFamily
                 font.pixelSize: Style.font.caption
@@ -299,27 +299,27 @@ Panel {
 
               Button {
                 visible: deviceRow.modelData.mountpoint === ""
-                text: "Montar"
+                text: "Mount"
                 fontFamily: root.fontFamily
                 foreground: root.foreground
                 onClicked: root.mountDevice(deviceRow.modelData)
               }
               Button {
                 visible: deviceRow.modelData.mountpoint !== ""
-                text: "Abrir"
+                text: "Open"
                 fontFamily: root.fontFamily
                 foreground: root.foreground
                 onClicked: root.openDevice(deviceRow.modelData)
               }
               Button {
                 visible: deviceRow.modelData.mountpoint !== ""
-                text: "Desmontar"
+                text: "Unmount"
                 fontFamily: root.fontFamily
                 foreground: root.foreground
                 onClicked: root.unmountDevice(deviceRow.modelData)
               }
               Button {
-                text: "Ejetar"
+                text: "Eject"
                 fontFamily: root.fontFamily
                 foreground: root.foreground
                 onClicked: root.ejectDevice(deviceRow.modelData)
