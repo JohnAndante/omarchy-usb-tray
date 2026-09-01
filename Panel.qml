@@ -123,7 +123,8 @@ Panel {
     stdout: StdioCollector {
       onStreamFinished: function() {
         root.devices = Model.parseDevices(text, {
-          minSizeMb: root.setting("minSizeMb", 0)
+          minSizeMb: root.setting("minSizeMb", 0),
+          includeAllHotplug: root.setting("includeAllHotplug", false) === true
         })
       }
     }

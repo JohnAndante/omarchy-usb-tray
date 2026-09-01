@@ -4,7 +4,8 @@
 // turns it back into a human-readable string for display.
 //
 // A device counts as removable when it (or its parent disk) is RM=1
-// (pendrive, SD card) or HOTPLUG=1 with TRAN=usb (external USB SSD/HDD).
+// (pendrive, SD card) or HOTPLUG=1 with TRAN=usb (external USB SSD/HDD), or
+// simply HOTPLUG=1 regardless of transport when includeAllHotplug is set.
 // The flag propagates from a disk down to its partitions, since lsblk only
 // reports rm/hotplug/tran reliably on the physical device row. Only rows
 // that actually carry a filesystem are surfaced — an unformatted disk or
@@ -24,6 +25,7 @@ function formatSize(bytes) {
 function parseDevices(jsonText, options) {
   options = options || {}
   var minSizeBytes = (Number(options.minSizeMb) || 0) * 1024 * 1024
+  var includeAllHotplug = !!options.includeAllHotplug
 
   var result = []
   var data
@@ -38,7 +40,7 @@ function parseDevices(jsonText, options) {
     if (!node) return
 
     var isPartOrDisk = node.type === "part" || node.type === "disk"
-    var ownRemovable = !!node.rm || (!!node.hotplug && node.tran === "usb")
+    var ownRemovable = !!node.rm || (!!node.hotplug && (includeAllHotplug || node.tran === "usb"))
     var removable = ownRemovable || parentRemovable
     var sizeBytes = Number(node.size) || 0
 
