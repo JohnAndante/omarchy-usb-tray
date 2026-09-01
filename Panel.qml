@@ -115,12 +115,16 @@ Panel {
     onTriggered: root.refreshDevices()
   }
 
+  // "-b" reports SIZE in raw bytes so the "minSizeMb" setting can filter
+  // exactly instead of parsing lsblk's human-readable size strings.
   Process {
     id: lsblkProc
-    command: ["lsblk", "-J", "-o", "NAME,LABEL,SIZE,FSTYPE,MOUNTPOINT,RM,HOTPLUG,TRAN,UUID,TYPE"]
+    command: ["lsblk", "-b", "-J", "-o", "NAME,LABEL,SIZE,FSTYPE,MOUNTPOINT,RM,HOTPLUG,TRAN,UUID,TYPE"]
     stdout: StdioCollector {
       onStreamFinished: function() {
-        root.devices = Model.parseDevices(text)
+        root.devices = Model.parseDevices(text, {
+          minSizeMb: root.setting("minSizeMb", 0)
+        })
       }
     }
   }
