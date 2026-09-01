@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "johnandante.removable-media",
-  "name": "Removable Media",
-  "version": "1.0.0",
+  "id": "johnandante.usb-tray",
+  "name": "USB Tray",
+  "version": "1.1.0",
   "author": "johnandante",
   "description": "Removable/USB storage indicator with mount, unmount, and eject",
   "kinds": [
@@ -12,7 +12,7 @@
     "barWidget": "Panel.qml"
   },
   "barWidget": {
-    "displayName": "Removable Media",
+    "displayName": "USB Tray",
     "description": "Shows an icon when a removable drive is connected, with a popup to mount/unmount/eject",
     "category": "System",
     "allowMultiple": false

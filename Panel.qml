@@ -14,8 +14,8 @@ import "Model.js" as Model
 // while staying reactive.
 Panel {
   id: root
-  moduleName: "johnandante.removable-media"
-  ipcTarget: "johnandante.removable-media"
+  moduleName: "johnandante.usb-tray"
+  ipcTarget: "johnandante.usb-tray"
   manageIpc: false
 
   readonly property string fontFamily: bar ? bar.fontFamily : Style.font.family
@@ -26,8 +26,9 @@ Panel {
   // nf-md-usb_flash_drive_outline (U+F129F) when devices are present but
   // none are mounted (unmounted/ejected but still known to the system).
   // Both confirmed against the official nerd-fonts glyphnames.json.
-  readonly property string deviceGlyphMounted: "󱊞"
-  readonly property string deviceGlyphEjected: "󱊟"
+  // Overridable via the "mountedIcon"/"ejectedIcon" shell.json settings.
+  readonly property string deviceGlyphMounted: root.setting("mountedIcon", "󱊞")
+  readonly property string deviceGlyphEjected: root.setting("ejectedIcon", "󱊟")
 
   property var devices: []
   property var commandQueue: []
@@ -115,12 +116,16 @@ Panel {
     onTriggered: root.refreshDevices()
   }
 
+  // -b: raw bytes for exact minSizeMb filtering, see Model.js.
   Process {
     id: lsblkProc
-    command: ["lsblk", "-J", "-o", "NAME,LABEL,SIZE,FSTYPE,MOUNTPOINT,RM,HOTPLUG,TRAN,UUID,TYPE"]
+    command: ["lsblk", "-b", "-J", "-o", "NAME,LABEL,SIZE,FSTYPE,MOUNTPOINT,RM,HOTPLUG,TRAN,UUID,TYPE"]
     stdout: StdioCollector {
       onStreamFinished: function() {
-        root.devices = Model.parseDevices(text)
+        root.devices = Model.parseDevices(text, {
+          minSizeMb: root.setting("minSizeMb", 0),
+          includeAllHotplug: root.setting("includeAllHotplug", false)
+        })
       }
     }
   }
@@ -133,11 +138,11 @@ Panel {
     stderr: SplitParser {
       onRead: function(line) {
         var text = String(line).trim()
-        if (text !== "") console.warn("[removable-media]", actionProc.command.join(" "), "->", text)
+        if (text !== "") console.warn("[usb-tray]", actionProc.command.join(" "), "->", text)
       }
     }
     onExited: function(exitCode) {
-      if (exitCode !== 0) console.warn("[removable-media] command failed with exit code", exitCode)
+      if (exitCode !== 0) console.warn("[usb-tray] command failed with exit code", exitCode)
       if (root.commandQueue.length > 0) root.runQueue()
       else root.refreshDevices()
     }
@@ -158,10 +163,12 @@ Panel {
     bar: root.bar
     text: root.icon
     tooltipText: root.devices.length > 0
-      ? (root.devices.length === 1 ? "1 dispositivo removível" : root.devices.length + " dispositivos removíveis")
+      ? (root.devices.length === 1 ? "1 removable device" : root.devices.length + " removable devices")
       : ""
+    // "rightClickAction" shell.json setting: "eject-all" (default) or
+    // "open-popup".
     onPressed: function(b) {
-      if (b === Qt.RightButton) root.ejectAll()
+      if (b === Qt.RightButton && root.setting("rightClickAction", "eject-all") !== "open-popup") root.ejectAll()
       else root.toggle()
     }
   }
@@ -172,7 +179,7 @@ Panel {
     bar: root.bar
     owner: root
     open: root.opened
-    contentWidth: popup.fittedContentWidth(Style.space(420))
+    contentWidth: popup.fittedContentWidth(Style.space(Number(root.setting("popupWidth", 420))))
     contentHeight: popup.fittedContentHeight(column.implicitHeight)
 
     Column {
@@ -182,10 +189,10 @@ Panel {
 
       PanelHero {
         width: parent.width
-        title: "Mídia removível"
+        title: "USB Tray"
         meta: root.devices.length === 0
-          ? "Nada conectado"
-          : (root.devices.length === 1 ? "1 dispositivo" : root.devices.length + " dispositivos")
+          ? "Nothing connected"
+          : (root.devices.length === 1 ? "1 device" : root.devices.length + " devices")
         foreground: root.foreground
         fontFamily: root.fontFamily
         iconComponent: Component {
@@ -212,7 +219,7 @@ Panel {
           id: deviceHeader
           anchors.left: parent.left
           anchors.verticalCenter: parent.verticalCenter
-          text: "DISPOSITIVOS"
+          text: "DEVICES"
           foreground: root.foreground
           fontFamily: root.fontFamily
         }
@@ -221,7 +228,7 @@ Panel {
           id: ejectAllButton
           anchors.right: parent.right
           anchors.verticalCenter: parent.verticalCenter
-          text: "Ejetar tudo"
+          text: "Eject all"
           fontFamily: root.fontFamily
           foreground: root.foreground
           onClicked: root.ejectAll()
@@ -229,11 +236,11 @@ Panel {
       }
 
       // Section header alone, for the no-mounted-devices case (still shows
-      // "DISPOSITIVOS" above an unmounted-but-present drive without an
+      // "DEVICES" above an unmounted-but-present drive without an
       // eject-all button that would have nothing to do).
       PanelSectionHeader {
         visible: root.devices.length > 0 && root.mountedDevices.length === 0
-        text: "DISPOSITIVOS"
+        text: "DEVICES"
         foreground: root.foreground
         fontFamily: root.fontFamily
       }
@@ -241,7 +248,7 @@ Panel {
       Text {
         width: parent.width
         visible: root.devices.length === 0
-        text: "Nenhum dispositivo removível conectado"
+        text: "No removable device connected"
         color: root.dim
         font.family: root.fontFamily
         font.pixelSize: Style.font.bodySmall
@@ -283,7 +290,7 @@ Panel {
                 width: parent.width
                 text: deviceRow.modelData.size + (deviceRow.modelData.mountpoint !== ""
                   ? " · " + deviceRow.modelData.mountpoint
-                  : " · não montado")
+                  : " · not mounted")
                 color: root.dim
                 font.family: root.fontFamily
                 font.pixelSize: Style.font.caption
@@ -299,27 +306,27 @@ Panel {
 
               Button {
                 visible: deviceRow.modelData.mountpoint === ""
-                text: "Montar"
+                text: "Mount"
                 fontFamily: root.fontFamily
                 foreground: root.foreground
                 onClicked: root.mountDevice(deviceRow.modelData)
               }
               Button {
                 visible: deviceRow.modelData.mountpoint !== ""
-                text: "Abrir"
+                text: "Open"
                 fontFamily: root.fontFamily
                 foreground: root.foreground
                 onClicked: root.openDevice(deviceRow.modelData)
               }
               Button {
                 visible: deviceRow.modelData.mountpoint !== ""
-                text: "Desmontar"
+                text: "Unmount"
                 fontFamily: root.fontFamily
                 foreground: root.foreground
                 onClicked: root.unmountDevice(deviceRow.modelData)
               }
               Button {
-                text: "Ejetar"
+                text: "Eject"
                 fontFamily: root.fontFamily
                 foreground: root.foreground
                 onClicked: root.ejectDevice(deviceRow.modelData)
