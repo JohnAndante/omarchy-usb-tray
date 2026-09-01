@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0 - 2026-09-01
 
 - Translated all popup UI strings to English (title, section headers,
   button labels, tooltips, empty-state text). English is the standard
