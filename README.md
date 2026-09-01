@@ -4,6 +4,11 @@ Bar widget for [Omarchy](https://omarchy.org/) that shows a removable-media
 (USB pendrive / SD card / external USB drive) indicator, similar to what
 other desktop environments show next to the Bluetooth/network tray icons.
 
+<p align="center">
+  <img src="docs/popup-devices.png" alt="Popup with two mounted devices, each with Open/Unmount/Eject actions" width="45%">
+  <img src="docs/popup-empty.png" alt="Popup with no removable device connected" width="45%">
+</p>
+
 The icon only appears in the bar when a removable device is detected, and
 switches between two states:
 
