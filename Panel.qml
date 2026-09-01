@@ -116,8 +116,7 @@ Panel {
     onTriggered: root.refreshDevices()
   }
 
-  // "-b" reports SIZE in raw bytes so the "minSizeMb" setting can filter
-  // exactly instead of parsing lsblk's human-readable size strings.
+  // -b: raw bytes for exact minSizeMb filtering, see Model.js.
   Process {
     id: lsblkProc
     command: ["lsblk", "-b", "-J", "-o", "NAME,LABEL,SIZE,FSTYPE,MOUNTPOINT,RM,HOTPLUG,TRAN,UUID,TYPE"]
@@ -125,7 +124,7 @@ Panel {
       onStreamFinished: function() {
         root.devices = Model.parseDevices(text, {
           minSizeMb: root.setting("minSizeMb", 0),
-          includeAllHotplug: root.setting("includeAllHotplug", false) === true
+          includeAllHotplug: root.setting("includeAllHotplug", false)
         })
       }
     }
@@ -180,7 +179,6 @@ Panel {
     bar: root.bar
     owner: root
     open: root.opened
-    // "popupWidth" shell.json setting overrides the default popup width.
     contentWidth: popup.fittedContentWidth(Style.space(Number(root.setting("popupWidth", 420))))
     contentHeight: popup.fittedContentHeight(column.implicitHeight)
 
